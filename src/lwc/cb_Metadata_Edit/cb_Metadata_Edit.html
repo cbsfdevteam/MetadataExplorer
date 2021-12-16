@@ -1,0 +1,16 @@
+<!--
+  @description       : 
+  @author            : Pelleg Maimon
+  @group             : 
+  @last modified on  : 12-15-2021
+  @last modified by  : Pelleg Maimon
+-->
+<template>
+    <lightning-input disabled={disableField} variant="label-hidden" if:true={isNumber} type="number" value={value} onchange={handleChange}></lightning-input>
+    <lightning-input disabled={disableField} variant="label-hidden" if:true={isString} type="text" value={value} onchange={handleChange}></lightning-input>
+    <lightning-input disabled={disableField} variant="label-hidden" if:true={isDate} type="date" value={value} onchange={handleChange}></lightning-input>
+    <!-- <lightning-input  variant="label-hidden" if:true={isBoolean} type="checkbox"  value={value}></lightning-input> -->
+    <c-cb_mte_-toggle if:true={isBoolean} value={value} truename="true" falsename="false" onchange={handleChange} ></c-cb_mte_-toggle>
+    <lightning-textarea  disabled={disableField} variant="label-hidden" if:true={isTextArea} value={value} onchange={handleChange}></lightning-textarea>
+    <div if:true={isError}>NOT POSSIBLE...yet!</div>
+</template>

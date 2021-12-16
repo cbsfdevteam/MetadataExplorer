@@ -1,0 +1,141 @@
+<!--
+  @description       : 
+  @author            : Pelleg Maimon
+  @group             : 
+  @last modified on  : 12-15-2021
+  @last modified by  : Pelleg Maimon
+-->
+<template>
+    <div class="slds-page-header slds-page-header_record-home">
+        <div style="margin-bottom: 20px;" class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+          <div class="slds-media">
+              <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                  <h1>
+                      <span>Custom Metadata Type</span>
+                      <span class="slds-page-header__title slds-truncate" title={viewabledata.name}>{viewabledata.name}</span>
+                  </h1>
+                  </div>
+              </div>
+              </div>
+          </div>
+          </div>
+          <div class="slds-page-header__col-actions">
+              <div class="slds-page-header__controls">
+                  <div class="slds-page-header__control">
+                      <ul class="slds-button-group-list">
+                        <li style="margin-right: 15px;">
+                          <label class="slds-form-element__label">Filter by Field</label><br/>
+                          <lightning-combobox
+                          variant="label-hidden"
+                          value=""
+                          placeholder="Select Filter Field"
+                          options={filterFields}
+                          onchange={onSelectedFilterField}
+                          ></lightning-combobox>
+                          <c-cb_mte_-lookup-plus listdata={viewabledata.records} filterfieldapi={filterfield} onselected={filterRecords} placeholder="Search For..."></c-cb_mte_-lookup-plus>
+                        </li>
+                        <li style="margin-right: 15px;">
+                          <label class="slds-form-element__label">Refresh records</label><br/>
+                          <lightning-button onclick={refreshRecordsButton} variant="brand" label="Refresh records"></lightning-button>
+                        </li>
+                        <li style="margin-right: 15px;">
+                          <label class="slds-form-element__label">Create new record</label><br/>
+                          <lightning-button onclick={openModalnew} variant="brand" label="Create new record"></lightning-button>
+                        </li>
+                          <li style="margin-right: 15px;">
+                            <c-cb_mte_-dropdown-picklist showallbutton={showallbutton} onselectedfields={refreshRecords} metadatatype={viewabledata.name}></c-cb_mte_-dropdown-picklist>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="slds-page-header__row" style="overflow: auto;">
+          <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="" style="width:10px" scope="col">
+                  <div class="slds-truncate" title="Edit">Modal View</div>
+                </th>
+                <th class="" style="width:10px" scope="col">
+                  <div class="slds-truncate" title="Classic View">Classic View</div>
+                </th>
+                <th class=""  scope="col">
+                  <div class="slds-truncate" title="Label">Label</div>
+                </th>
+                <th class=""  scope="col">
+                  <div class="slds-truncate" title="API Name">API Name</div>
+                </th>
+                <template for:each={viewabledata.fields} for:item="field">
+                    <th key={field.name} class=""  scope="col">
+                        <div class="slds-truncate" title={field.name}>{field.name}</div>
+                      </th>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+            <template for:each={viewabledata.records} for:item="record">
+              <tr ondblclick={openModal} data-name={record.name} key={record.name} class="blabla slds-hint-parent">
+                <td  data-label="Open">
+                    <div class="slds-truncate" title="View">
+                        <!-- <a data-type="object" onclick={handleManage} href="javascript:void(0)" tabindex="-1">Open</a> -->
+                        <lightning-button data-name={record.name} onclick={openModal} variant="brand" label="View"></lightning-button>
+                    </div>
+                </td>
+                <td  data-label="Edit">
+                    <div class="slds-truncate" title="Classic">
+                        <!-- <a data-type="object" onclick={handleManage} href="javascript:void(0)" tabindex="-1">Open</a> -->
+                        <lightning-button data-name={record.name} onclick={handleEdit} variant="success" label="Classic"  ></lightning-button>
+                    </div>
+                </td>
+                <template for:each={record.details} for:item="foo">
+                    <td  key={foo} data-label={foo}>
+                        <div class="slds-truncate" style="white-space: initial;" title={foo}>{foo}</div>
+                    </td>
+                </template>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <c-cb_mte_modal modaltitle={modaltitle}>
+        <div style="max-height: 500px;overflow: auto;" slot="modalbody">
+            <table  class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+                <thead>
+                  <tr class="slds-line-height_reset">
+                    <th class="" style="width:5%" scope="col">
+                      <div class="slds-truncate" title="Field">Field</div>
+                    </th>
+                    <th class="" style="width:5%" scope="col">
+                      <div class="slds-truncate" title="Value">Value</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template for:each={modalbody} for:item="record">
+                    <tr ondblclick={openEdit} key={record.key} class="slds-hint-parent">
+                      <td style="white-space: initial;" key={record.key} data-label={record.key}>
+                          <div title={record.key}>{record.key}</div>
+                      </td>
+                      <td style="white-space: initial;" key={record.value} data-label={record.value}>
+                          <div if:false={editMode} title={record.value}>{record.value}</div>
+                          <c-cb_-metadata_-edit if:true={editMode} onupdatedfields={handleEditChanges} modaltype={modaltype} field={record.key} value={record.value} type={record.type}></c-cb_-metadata_-edit>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+        </div>
+        <div slot="modalfooter">
+          <lightning-button if:false={editMode} class="slds-m-right_x-large" onclick={closeModal} variant="brand" label="Close"  ></lightning-button>
+          <lightning-button if:false={editMode} class="slds-m-right_x-large" onclick={openEdit} variant="brand" label="Edit fields"  ></lightning-button>
+
+          <lightning-button if:true={editMode} class="slds-m-right_xx-large" onclick={cancelEdit} variant="destructive" label="Cancel"  ></lightning-button>
+          <lightning-button if:true={editMode} onclick={saveEdit} variant="success" label="Save"  ></lightning-button>
+        </div>
+    </c-cb_mte_modal>
+</template>

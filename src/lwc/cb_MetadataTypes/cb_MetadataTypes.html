@@ -1,0 +1,74 @@
+<!--
+  @description       : 
+  @author            : Pelleg Maimon
+  @group             : 
+  @last modified on  : 12-15-2021
+  @last modified by  : Pelleg Maimon
+-->
+<template>
+    <div class="slds-page-header slds-page-header_record-home">
+        <div style="margin-bottom: 20px;" class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+            <div class="slds-media">
+                <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                    <div class="slds-page-header__name-title">
+                    <h1>
+                        <span>Custom Metadata Types</span>
+                        <span class="slds-page-header__title slds-truncate" title="Explorer">Explorer</span>
+                    </h1>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                    <div class="slds-page-header__control">
+                        <ul class="slds-button-group-list">
+                            <li>
+                                <c-cb_mte_-lookup listdata={data} onselected={FilterSubjects} placeholder="Filter by Label"></c-cb_mte_-lookup>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-page-header__row">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-labelledby="element-with-table-label other-element-with-table-label">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                    <th class="" style="width:10%" scope="col">
+                        <div class="slds-truncate" title="Manage Records">Records</div>
+                    </th>
+                    <th class="" style="width:40%" scope="col">
+                        <div class="slds-truncate" title="Label">Label</div>
+                    </th>
+                    <th class="" style="width:40%" scope="col">
+                        <div class="slds-truncate" title="API Name">API Name</div>
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={viewabledata} for:item="title">
+                        <tr key={title.name} class="slds-hint-parent">
+                            <th data-label="Manage Records" scope="row">
+                                <div class="slds-truncate" title="Manage Records">
+                                    <!-- <a data-type="records" data-name={title.name} onclick={handleManage} href="javascript:void(0)" tabindex="-1">Manage</a> -->
+                                    <lightning-button data-type="records" data-name={title.name} onclick={handleManage} variant="brand" label="Manage"  ></lightning-button>
+                                </div>
+                            </th>
+                            <td data-label="Label">
+                                <div class="slds-truncate" title={title.label}>{title.label}</div>
+                            </td>
+                            <td data-label="API Name">
+                                <div class="slds-truncate" title={title.name}>{title.name}</div>
+                            </td>
+                            </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <lightning-spinner if:false={loaded} alternative-text="Loading"></lightning-spinner>
+</template>
